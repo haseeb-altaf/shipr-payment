@@ -1,26 +1,16 @@
 pipeline {
     agent any
 
-    parameters {
-        gitBranch(name: 'BRANCH_NAME', description: 'Select branch to build')
-    }
-
     environment {
-        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
-        DOCKER_HUB_REPO = 'haseeb497/project'
-        IMAGE_NAME = "${DOCKER_HUB_REPO}:${params.BRANCH_NAME}" // Image name with branch tag
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials' 
+        DOCKER_HUB_REPO = 'haseeb497/project' 
+        IMAGE_NAME = "${DOCKER_HUB_REPO}:inventory-payment-${env.BUILD_NUMBER}"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    echo "Checking out branch: ${params.BRANCH_NAME}"
-                    checkout([$class: 'GitSCM', 
-                              branches: [[name: "*/${params.BRANCH_NAME}"]],
-                              userRemoteConfigs: [[url: 'https://github.com/haseeb-altaf/shipr-frontend.git']]
-                    ])
-                }
+                checkout scm
             }
         }
 
@@ -55,4 +45,3 @@ pipeline {
         }
     }
 }
-
